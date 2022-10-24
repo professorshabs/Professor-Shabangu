@@ -84,53 +84,53 @@ resource "aws_budgets_budget" "Prof_Test_monthly-budget" {
 
  }
 
-//##################
-//# Glue Catalog   #
-//##################
-//resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
-//  name          = "MyCatalogTable"
-//  database_name = "MyCatalogDatabase"
-//}
-//
+  ##################
+  # Glue Catalog   #
+  ##################
+  resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
+    name          = "MyCatalogTable"
+    database_name = "MyCatalogDatabase"
+  }
 
-//
-//##################
-//# Glue Crawler   #
-//##################
-//resource "aws_glue_crawler" "example" {
-//  database_name = aws_glue_catalog_database.example.name
-//  name          = "example"
-//  role          = aws_iam_role.example.arn
-//
-//  catalog_target {
-//    database_name = aws_glue_catalog_database.example.name
-//    tables        = [aws_glue_catalog_table.example.name]
-//  }
-//
-//  schema_change_policy {
-//    delete_behavior = "LOG"
-//  }
-//
-//  configuration = <<EOF
-//{
-//  "Version":1.0,
-//  "Grouping": {
-//    "TableGroupingPolicy": "CombineCompatibleSchemas"
-//  }
-//}
-//EOF
-//}
-//
-//##################
-//# Glue Job       #
-//##################
-//resource "aws_glue_job" "example" {
-//  name     = "python-job"
-//  description = "ETL to s3 from client aurora cluster"
-//  role_arn = "${var.arn-var}"
-//
-//  command {
-//    script_location = "s3://${var.bucket-name}/Script/Glue/${var.file-name}"
-//    python_version = "3"
-//  }
-//}
+
+
+  ##################
+  # Glue Crawler   #
+  ##################
+  resource "aws_glue_crawler" "example" {
+    database_name = aws_glue_catalog_database.example.name
+    name          = "terraflow-crawler"
+    role          = "${var.arn-var}"
+
+    catalog_target {
+      database_name = MyCatalogDatabase.example.name
+
+    }
+
+    schema_change_policy {
+      delete_behavior = "LOG"
+    }
+
+    configuration = <<EOF
+  {
+    "Version":1.0,
+    "Grouping": {
+      "TableGroupingPolicy": "CombineCompatibleSchemas"
+    }
+  }
+  EOF
+  }
+
+  ##################
+  # Glue Job       #
+  ##################
+  resource "aws_glue_job" "example" {
+    name     = "python-job"
+    description = "ETL to s3 from client aurora cluster"
+    role_arn = "${var.arn-var}"
+
+    command {
+      script_location = "s3:  ${var.bucket-name}/Script/Glue/${var.file-name}"
+      python_version = "3"
+    }
+  }

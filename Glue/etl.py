@@ -21,16 +21,12 @@ global AWS_SECRET_KEY
 global AWS_REGION_NAME
 global s3bucketName
 
-# AWS_ACCESS_KEY = sys.argv[1] #"AKIAY74UFLOBA65LOKEM"
-# AWS_SECRET_KEY = sys.argv[2]#"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"
-#
-# AWS_REGION_NAME = sys.argv[3] #"af-south-1"
-# s3bucketName = sys.argv[4] #"mybucket-lake-capetown2"
+AWS_ACCESS_KEY = sys.argv[1]
+AWS_SECRET_KEY = sys.argv[2]
 
-AWS_ACCESS_KEY = "AKIAY74UFLOBA65LOKEM"
-AWS_SECRET_KEY = "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"
-AWS_REGION_NAME = "af-south-1"
-s3bucketName = "mybucket-lake-capetown2"
+AWS_REGION_NAME = sys.argv[3]
+s3bucketName = sys.argv[4]
+
 
 
 class BankTime(object):
@@ -186,7 +182,7 @@ def main():
     data_df = pd.read_csv('output.csv')
     for bank in data_df.bank_name.unique():
         df = data_df.loc[data_df['bank_name'] == bank]
-        #df['SMA_3Months'] = df['Close'].rolling(90).mean()  ## 3 Months moving average
+        df['SMA_3Months'] = df['Close'].rolling(90).mean()  ## 3 Months moving average
         print(bank)
         lake_instance = Datalake(base_folder="Data") # loading data to Data/bank/year/month
         lake_instance.upload_data_lake(bank = bank, csv_data=df)
